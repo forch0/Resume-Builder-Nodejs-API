@@ -15,6 +15,7 @@
 const express = require('express');
 const { registerUser, loginUser, getUserProfile } = require('../controllers/authController');
 const { protect } = require('../middlewares/authMiddleware');
+const upload = require('../middlewares/uploadMiddleware'); // Middleware for handling file uploads
 
 const router = express.Router();
 
@@ -22,5 +23,18 @@ const router = express.Router();
 router.post('/register', registerUser); // Register a new user
 router.post('/login', loginUser); // Login a user
 router.get('/profile', protect, getUserProfile); // Get user profile (protected route)
+
+
+router.post('/upload-image', upload.single('image'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    // Assuming you have a function to save the image URL to the user's profile
+    const imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+    // Save imageUrl to user's profile in the database
+
+    res.status(200).json({ message: 'Image uploaded successfully', imageUrl });
+}); // Upload an image (protected route)
 
 module.exports = router;
