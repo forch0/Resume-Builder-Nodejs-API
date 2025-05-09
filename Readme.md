@@ -37,6 +37,17 @@ This is a backend API for a Resume Builder application built using **Node.js**, 
 - **MongoDB**: A running instance or use **MongoDB Atlas**.
 - **Nodemon**: Optional for development (for automatic server restart).
 
+## Technologies Used
+
+- **Node.js**: JavaScript runtime environment for building the API.
+- **Express**: Web framework for Node.js used to handle routing and middleware.
+- **MongoDB**: NoSQL database used for storing resume data.
+- **Mongoose**: ODM (Object Data Modeling) library for MongoDB, used for schema and query building.
+- **JWT (JSON Web Token)**: Token-based authentication for user login and authorization.
+- **Multer**: Middleware for handling multipart form-data, which is used for file uploads.
+
+- **HTTPie**API Testing with httpie
+
 ## Installation
 
 Follow these steps to set up the project locally:
@@ -105,8 +116,3 @@ The **`protect`** middleware ensures that only authenticated users can access ce
 
 The **`uploadResumeImages`** middleware handles file uploads, ensuring that only allowed file types are uploaded and that the size does not exceed the set limit.
 
-## Example Usage
-
-### 1. Register a New User
-```bash
-POST /api/auth/register
