@@ -12,3 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const express = require('express');
+const { registerUser, loginUser, getUserProfile } = require('../controllers/authController');
+const { protect } = require('../middlewares/authMiddleware');
+
+const router = express.Router();
+
+// Auth Routes
+router.post('/register', registerUser); // Register a new user
+router.post('/login', loginUser); // Login a user
+router.get('/profile', protect, getUserProfile); // Get user profile (protected route)
+
+module.exports = router;

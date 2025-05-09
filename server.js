@@ -18,6 +18,8 @@ const cors = require('cors');
 const path = require('path');
 const connectDB = require('./config/db');
 
+const authRoutes = require('./routes/authRoutes'); // Adjust the path to your auth routes
+
 const app = express();
 
 // Middleware to handle CORS
@@ -33,6 +35,10 @@ connectDB(); // Uncomment this line to connect to your database
 
 // Middleware to parse JSON bodies
 app.use(express.json()); // Parse JSON bodies
+
+
+// Register routes
+app.use('/api/auth', authRoutes); // Adjust the path to your auth routes
 
 
 // Start server

@@ -12,3 +12,75 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const User = require('../models/User'); // Adjust the path to your User model
+const bcrypt = require('bcryptjs'); // For hashing passwords
+const jwt = require('jsonwebtoken'); // For generating JWT tokens
+
+// Generate JWT token
+const generateToken = (userId) => {
+    return jwt.sign({ id:User }, process.env.JWT_SECRET, {
+        expiresIn: '30d', // Token expiration time
+    });
+};
+
+
+// @desc    Register a new user
+// @route   POST /api/auth/register
+// @access  Public
+const registerUser = async (req, res) => {
+    try {
+        const { name, email, password,profileImageUrl } = 
+        req.body;
+
+        // Check if user already exists
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+
+        // Hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Create new user
+        const user = await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            profileImageUrl,
+        });
+
+        // Respond with user data and token
+        if (user) {
+            res.status(201).json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                profileImageUrl: user.profileImageUrl,
+                token: generateToken(user._id),
+            });
+        } else {
+            res.status(400).json({ message: 'Invalid user data' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+}
+
+
+// @desc    Authenticate a user and get token
+// @route   POST /api/auth/login
+// @access  Public
+const loginUser = async (req, res) => {}
+
+// @desc    Get user profile
+// @route   GET /api/auth/profile
+// @access  Private
+const getUserProfile = async (req, res) => {}
+
+module.exports = {
+    registerUser,
+    loginUser,
+    getUserProfile,
+};
+    
