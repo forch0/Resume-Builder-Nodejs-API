@@ -46,7 +46,7 @@ This is a backend API for a Resume Builder application built using **Node.js**, 
 - **JWT (JSON Web Token)**: Token-based authentication for user login and authorization.
 - **Multer**: Middleware for handling multipart form-data, which is used for file uploads.
 
-- **HTTPie**API Testing with httpie
+- **HTTPie**: API Testing with httpie
 
 ## Installation
 
