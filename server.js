@@ -12,19 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-require('dotenv').config();
+require('dotenv').config({ path: '.env.local' });
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const connectDB = require('./config/db');
 
 const app = express();
 
 // Middleware to handle CORS
 app.use(cors({
-    origin: '*', // Allow all origins (you can specify a specific origin if needed)
+    origin: process.env.CLIENT_URL ||'*', // Allow all origins (you can specify a specific origin if needed)
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization'] // Allowed headers
 }));
+
+// ConnectDB is a placeholder for your database connection logic
+
+connectDB(); // Uncomment this line to connect to your database
 
 // Middleware to parse JSON bodies
 app.use(express.json()); // Parse JSON bodies
