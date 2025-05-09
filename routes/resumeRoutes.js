@@ -22,25 +22,17 @@ const {
 } = require('../controllers/resumeController');
 
 const { protect } = require('../middlewares/authMiddleware');
+const {uploadResumeImages} = require('../controllers/uploadImages');
 
 const router = express.Router();
+
 
 router.post('/', protect, createResume); // Create a new resume (protected route)
 router.get('/', protect, getResumes); // Get all resumes (protected route)
 router.get('/:id', protect, getResumeById); // Get a resume by ID (protected route)
 router.put('/:id', protect, updateResume); // Update a resume (protected route)
-// router.put('/:id/upload', protect, upload.single('resumeImage'), (req, res) => { 
-//     try {
-//         // Assuming uploadResumeImages is a function that processes the uploaded file
-//         uploadResumeImages(req, res); 
-//     } catch (err) {
-//         if (err instanceof multer.MulterError) {
-//             res.status(400).json({ message: `File upload error: ${err.message}` });
-//         } else {
-//             res.status(500).json({ message: `Server error: ${err.message}` });
-//         }
-//     }
-// }); // Upload images for a resume (protected route)
 router.delete('/:id', protect, deleteResume); // Delete a resume (protected route)
+router.put('/upload/:id', protect, uploadResumeImages); // Upload resume images (protected route)
+
 
 module.exports = router;

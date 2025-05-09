@@ -116,12 +116,11 @@ const createResume = async (req, res) => {
 // @route   GET /api/resumes
 // @access  Private
 const getResumes = async (req, res) => {
-    const userId = req.user._id; // Get the logged-in user's ID from the request
-
     try {
-        const resumes = await Resume.find({ user: userId }); // Find all resumes for the logged-in user
-
-        res.status(200).json(resumes); // Respond with the found resumes
+        const resumes = await Resume.find({ userId: req.user_Id }).sort({
+            updatedAt: -1, // Sort by creation date in descending order
+        });
+        res.json(resumes); // Respond with the found resumes
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
@@ -131,16 +130,13 @@ const getResumes = async (req, res) => {
 // @ route   GET /api/resumes/:id
 // @ access  Private
 const getResumeById = async (req, res) => {
-    const { id } = req.params; // Get the resume ID from the request parameters
-
     try {
-        const resume = await Resume.findById(id); // Find the resume by ID
+        const resume = await Resume.findOne({ _id: req.params.id, userId: req.user._id }); // Find the resume by ID and userId
 
         if (!resume) {
             return res.status(404).json({ message: 'Resume not found' }); // Respond with 404 if not found
         }
-
-        res.status(200).json(resume); // Respond with the found resume
+        res.json(resume); // Respond with the found resume
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
@@ -150,26 +146,30 @@ const getResumeById = async (req, res) => {
 // @route   PUT /api/resumes/:id
 // @access  Private
 const updateResume = async (req, res) => {
-    const { id } = req.params; // Get the resume ID from the request parameters
-    const { title, description } = req.body; // Get the title and description from the request body
-
     try {
-        const resume = await Resume.findById(id); // Find the resume by ID
+        const { id } = req.params; // Get resume ID from request parameters
+        const { title, profileInfo, contactInfo, workExperience, education, skills, projects, certifications, interests } = req.body;
+
+        // Find the resume by ID and ensure it belongs to the authenticated user
+        const resume = await Resume.findOne({ _id: id, userId: req.user._id });
 
         if (!resume) {
-            return res.status(404).json({ message: 'Resume not found' }); // Respond with 404 if not found
+            return res.status(404).json({ message: 'Resume not found or you are not authorized to update it' });
         }
 
         // Update the resume fields
         resume.title = title || resume.title;
-        resume.description = description || resume.description;
+        resume.profileInfo = profileInfo || resume.profileInfo;
+        resume.contactInfo = contactInfo || resume.contactInfo;
+        resume.workExperience = workExperience || resume.workExperience;
+        resume.education = education || resume.education;
+        resume.skills = skills || resume.skills;
+        resume.projects = projects || resume.projects;
+        resume.certifications = certifications || resume.certifications;
+        resume.interests = interests || resume.interests;
 
-        if (req.file) {
-            // If a new file is uploaded, update the file path
-            resume.resume = req.file.path;
-        }
-
-        await resume.save(); // Save the updated resume to the database
+        // Save the updated resume
+        await resume.save();
 
         res.status(200).json(resume); // Respond with the updated resume
     } catch (error) {
@@ -181,25 +181,22 @@ const updateResume = async (req, res) => {
 // @route   DELETE /api/resumes/:id
 // @access  Private
 const deleteResume = async (req, res) => {
-    const { id } = req.params; // Get the resume ID from the request parameters
-
     try {
-        const resume = await Resume.findById(id); // Find the resume by ID
+        const { id } = req.params; // Get resume ID from request parameters
+
+        // Find the resume by ID and ensure it belongs to the authenticated user
+        const resume = await Resume.findOneAndDelete({ _id: id, userId: req.user._id });
 
         if (!resume) {
-            return res.status(404).json({ message: 'Resume not found' }); // Respond with 404 if not found
+            return res.status(404).json({ message: 'Resume not found or you are not authorized to delete it' });
         }
 
-        // Delete the file from the server
-        fs.unlinkSync(path.join(__dirname, '..', resume.resume)); // Adjust the path to your file location
-
-        await resume.remove(); // Remove the resume from the database
-
-        res.status(200).json({ message: 'Resume deleted successfully' }); // Respond with success message
+        res.status(200).json({ message: 'Resume deleted successfully' }); // Respond with a success message
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 }
+
 
 module.exports = {
     createResume,
