@@ -19,6 +19,7 @@ const path = require('path');
 const connectDB = require('./config/db');
 
 const authRoutes = require('./routes/authRoutes'); // Adjust the path to your auth routes
+const resumeRoutes = require('./routes/resumeRoutes'); // Adjust the path to your resume routes 
 
 const app = express();
 
@@ -30,8 +31,7 @@ app.use(cors({
 }));
 
 // ConnectDB is a placeholder for your database connection logic
-
-connectDB(); // Uncomment this line to connect to your database
+connectDB(); 
 
 // Middleware to parse JSON bodies
 app.use(express.json()); // Parse JSON bodies
@@ -39,7 +39,10 @@ app.use(express.json()); // Parse JSON bodies
 
 // Register routes
 app.use('/api/auth', authRoutes); // Adjust the path to your auth routes
+app.use('/api/resume', resumeRoutes); // Adjust the path to your resume routes
 
+// Serve static files from the "uploads" directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded files
 
 // Start server
 const PORT = process.env.PORT || 5000;

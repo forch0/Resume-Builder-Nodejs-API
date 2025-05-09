@@ -18,10 +18,23 @@ const ResumeSchema = new mongoose.Schema(
     {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
         title: { type: String, required: true },
-        thumbnailLink: { type: String, required: true },
-        template:{theme: String, color: String},
-        profileInfo:{profilePreview: String, fullName: String, designation: String, summary: String },
-        contactInfo:{email: String, phone: String, location:String, address: String, website: String, linkedin: String, github: String},
+        thumbnailLink: { type: String, required: true }, // Keep this as required
+        template: { theme: String, color: String },
+        profileInfo: {
+            profilePreview: String, 
+            fullName: String, 
+            designation: String, 
+            summary: String
+        },
+        contactInfo: {
+            email: String, 
+            phone: String, 
+            location: String, 
+            address: String, 
+            website: String, 
+            linkedin: String, 
+            github: String
+        },
         workExperience: [
             {
                 companyName: String,
@@ -37,16 +50,15 @@ const ResumeSchema = new mongoose.Schema(
                 institution: String,
                 startDate: Date,
                 endDate: Date,
-                
             },
         ],
-        skills:[
+        skills: [
             {
                 name: String,
                 progress: Number,
             }
         ],
-        projects:[
+        projects: [
             {
                 title: String,
                 description: String,
@@ -54,22 +66,24 @@ const ResumeSchema = new mongoose.Schema(
                 liveDemo: String,
             }
         ],
-        certifications:[
+        certifications: [
             {
                 title: String,
                 issuer: String,
                 year: String,
             }
         ],
-        interests:[
+        interests: [
             {
-                name: String,
+                name: String,  // Structure should match the object with a `name` field
             }
-        ],  
+        ],
     },
     { 
-        timestamps: {createdAt: "CreatedAt", UpdatedAt: "UpdatedAt"},
-     }
+        timestamps: { createdAt: "CreatedAt", updatedAt: "UpdatedAt" },
+    }
 );
+
+
 
 module.exports = mongoose.model('Resume', ResumeSchema);
